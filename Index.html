@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Domótico IoT - Vivienda 1590 | UNAN-Managua</title>
+    <!-- FontAwesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #070d1d;
+            --bg-secondary: #0f172a;
+            --bg-card: #1e293b;
+            --bg-card-hover: #334155;
+            --accent-blue: #38bdf8;
+            --accent-cyan: #22d3ee;
+            --accent-emerald: #34d399;
+            --accent-red: #f87171;
+            --accent-amber: #fbbf24;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --glow-color: rgba(34, 211, 238, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Technical Background Pattern with Image & Smooth Pulse Animation */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                linear-gradient(rgba(7, 13, 29, 0.9), rgba(7, 13, 29, 0.9)),
+                url('https://imgs.search.brave.com/_8TPRAOPZrB4rzgQdiNsZfPAxp8I_gkE_bix3GHWvMw/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tYXJr/ZXRwbGFjZS5jYW52/YS5jb20vTUFER3lm/Z0NTejQvNC90aHVt/Ym5haWxfbGFyZ2Uv/Y2FudmEtZm90b2dy/YWYlQzMlQURhLWRl/LXBhaXNhamUtbmF0/dXJhbC1NQURHeWZn/Q1N6NC5qcGc');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -1;
+            pointer-events: none;
+            animation: bgZoom 25s infinite alternate ease-in-out;
+        }
+
+        @keyframes bgZoom {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+
+        /* Top Bar & Header */
+        header {
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .header-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+            color: var(--accent-cyan);
+            filter: drop-shadow(0 0 12px var(--accent-cyan));
+            animation: pulseIcon 3s infinite ease-in-out;
+        }
+
+        @keyframes pulseIcon {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px var(--accent-cyan)); }
+            50% { transform: scale(1.1); filter: drop-shadow(0 0 18px var(--accent-emerald)); }
+        }
+
+        .title-area h1 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--text-primary);
+        }
+
+        .title-area p {
+            font-size: 0.8rem;
+            color: var(--accent-emerald);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            position: relative;
+            padding: 0.2rem 0;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: var(--accent-emerald);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--accent-emerald);
+            text-shadow: 0 0 10px rgba(52, 211, 153, 0.4);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero / Presentation Section */
+        .hero-section {
+            padding: 4rem 2rem;
+            max-width: 1300px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 3rem;
+            align-items: center;
+            animation: fadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 3D CUBE CONTAINER & STYLES */
+        .cube-wrapper {
+            perspective: 1000px;
+            width: 160px;
+            height: 160px;
+            margin-bottom: 2rem;
+            cursor: grab;
+            user-select: none;
+        }
+
+        .cube-wrapper:active {
+            cursor: grabbing;
+        }
+
+        .cube-3d {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: rotateX(-20deg) rotateY(25deg);
+            animation: autoRotateCube 16s infinite linear;
+            transition: transform 0.1s ease-out;
+        }
+
+        .cube-wrapper:hover .cube-3d {
+            animation-play-state: paused;
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 160px;
+            height: 160px;
+            background: #ffffff;
+            border: 3px solid var(--accent-emerald);
+            border-radius: 12px;
+            box-shadow: 0 0 25px rgba(52, 211, 153, 0.5), inset 0 0 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px;
+        }
+
+        .cube-face img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+        }
+
+        /* Positions for the 6 faces of the cube (size = 160px, translateZ = 80px) */
+        .face-front  { transform: rotateY(0deg) translateZ(80px); }
+        .face-back   { transform: rotateY(180deg) translateZ(80px); }
+        .face-right  { transform: rotateY(90deg) translateZ(80px); }
+        .face-left   { transform: rotateY(-90deg) translateZ(80px); }
+        .face-top    { transform: rotateX(90deg) translateZ(80px); }
+        .face-bottom { transform: rotateX(-90deg) translateZ(80px); }
+
+        @keyframes autoRotateCube {
+            0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 20%, var(--accent-cyan) 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeIn 1.4s ease forwards;
+        }
+
+        .hero-description {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            animation: fadeIn 1.6s ease forwards;
+        }
+
+        .authors-card {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(14px);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.8rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: fadeIn 1.8s ease forwards;
+        }
+
+        .authors-card:hover {
+            border-color: rgba(52, 211, 153, 0.6);
+            box-shadow: 0 20px 40px rgba(52, 211, 153, 0.15);
+            transform: translateY(-4px);
+        }
+
+        .authors-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--accent-emerald), var(--accent-cyan));
+            box-shadow: 0 0 12px var(--accent-emerald);
+        }
+
+        .authors-card h3 {
+            font-size: 1rem;
+            color: var(--accent-emerald);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .authors-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.7rem;
+            font-size: 0.9rem;
+        }
+
+        .authors-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--text-primary);
+            transition: transform 0.3s ease;
+        }
+
+        .authors-list li:hover {
+            transform: translateX(6px);
+            color: var(--accent-emerald);
+        }
+
+        .authors-list i {
+            color: var(--accent-emerald);
+            font-size: 0.7rem;
+        }
+
+        .tutor-info {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed var(--border-color);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Section Layout */
+        .main-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section-header {
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--accent-emerald);
+            padding-left: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .section-header:hover {
+            transform: translateX(4px);
+        }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Access Button Section */
+        .dashboard-access-card {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(14px);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-access-card:hover {
+            border-color: var(--accent-emerald);
+            box-shadow: 0 0 30px rgba(52, 211, 153, 0.25), 0 20px 40px rgba(0,0,0,0.4);
+            transform: translateY(-4px);
+        }
+
+        .btn-access-dashboard {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: linear-gradient(135deg, var(--accent-emerald) 0%, var(--accent-cyan) 100%);
+            color: #0f172a;
+            font-size: 1.1rem;
+            font-weight: 700;
+            padding: 1rem 2.5rem;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 20px rgba(52, 211, 153, 0.35);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-access-dashboard::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.6s;
+        }
+
+        .btn-access-dashboard:hover::before {
+            left: 100%;
+        }
+
+        .btn-access-dashboard:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(52, 211, 153, 0.6);
+            background: linear-gradient(135deg, #059669 0%, #0891b2 100%);
+            color: #ffffff;
+        }
+
+        /* Architecture & Diagram Section */
+        .arch-diagram {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(14px);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+
+        .layer-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .layer-card {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--accent-cyan);
+            border-radius: 8px;
+            padding: 1.2rem 1.6rem;
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            align-items: center;
+            gap: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .layer-card:hover {
+            transform: translateX(8px);
+            background: rgba(30, 41, 59, 0.8);
+            box-shadow: 0 6px 18px rgba(34, 211, 238, 0.15);
+        }
+
+        .layer-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--accent-cyan);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .layer-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Technical Data Tables */
+        .table-responsive {
+            overflow-x: auto;
+            margin-bottom: 3rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(14px);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1.1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            transition: background 0.2s ease;
+        }
+
+        th {
+            background: rgba(30, 41, 59, 0.95);
+            color: var(--accent-emerald);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        tr:hover {
+            background: var(--bg-card-hover);
+        }
+
+        /* Logic Equations Block */
+        .code-block {
+            background: rgba(4, 8, 18, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.4rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #34d399;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);
+            transition: border-color 0.3s ease;
+        }
+
+        .code-block:hover {
+            border-color: rgba(52, 211, 153, 0.4);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(14px);
+            border-top: 1px solid var(--border-color);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 900px) {
+            .hero-section {
+                grid-template-columns: 1fr;
+            }
+            .layer-card {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+            nav ul {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-grid"></div>
+
+    <!-- Top Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo-area">
+                <i class="fa-solid fa-microchip logo-icon"></i>
+                <div class="title-area">
+                    <h1>UNAN-MANAGUA | INGENIERÍA ELECTRÓNICA</h1>
+                    <p>COMPONENTE: INTEGRADOR VIII - GRUPO III</p>
+                </div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#presentacion"><i class="fa-solid fa-house"></i> Inicio</a></li>
+                    <li><a href="#dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard SCADA</a></li>
+                    <li><a href="#plano3d"><i class="fa-solid fa-cube"></i> Plano 3D</a></li>
+                    <li><a href="#arquitectura"><i class="fa-solid fa-network-wired"></i> Arquitectura IoT</a></li>
+                    <li><a href="#especificaciones"><i class="fa-solid fa-list-check"></i> Especificaciones</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Presentation / Hero Section -->
+        <section id="presentacion" class="hero-section">
+            <div class="hero-content">
+                <!-- 3D CUBE DE LA UNAN-MANAGUA -->
+                <div class="cube-wrapper" id="cubeContainer" title="Arrastra para rotar el cubo de la UNAN-Managua">
+                    <div class="cube-3d" id="cube">
+                        <div class="cube-face face-front">
+                            <img src="https://imgs.search.brave.com/LcESPZNYi1HE0FHaCKChuDb-Kz4rYKgNQ8wcU6wj2wY/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/Z3J1cG9sYXJhYmlk/YS5vcmcvd3AtY29u/dGVudC91cGxvYWRz/LzIwMjAvMTAvTWFy/Y2FfVU5BTi1NYW5h/Z3VhLUpQRy1zY2Fs/ZWQuanBn" alt="UNAN Front">
+                        </div>
+                        <div class="cube-face face-back">
+                            <img src="https://imgs.search.brave.com/LcESPZNYi1HE0FHaCKChuDb-Kz4rYKgNQ8wcU6wj2wY/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/Z3J1cG9sYXJhYmlk/YS5vcmcvd3AtY29u/dGVudC91cGxvYWRz/LzIwMjAvMTAvTWFy/Y2FfVU5BTi1NYW5h/Z3VhLUpQRy1zY2Fs/ZWQuanBn" alt="UNAN Back">
+                        </div>
+                        <div class="cube-face face-right">
+                            <img src="https://imgs.search.brave.com/LcESPZNYi1HE0FHaCKChuDb-Kz4rYKgNQ8wcU6wj2wY/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/Z3J1cG9sYXJhYmlk/YS5vcmcvd3AtY29u/dGVudC91cGxvYWRz/LzIwMjAvMTAvTWFy/Y2FfVU5BTi1NYW5h/Z3VhLUpQRy1zY2Fs/ZWQuanBn" alt="UNAN Right">
+                        </div>
+                        <div class="cube-face face-left">
+                            <img src="https://imgs.search.brave.com/LcESPZNYi1HE0FHaCKChuDb-Kz4rYKgNQ8wcU6wj2wY/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/Z3J1cG9sYXJhYmlk/YS5vcmcvd3AtY29u/dGVudC91cGxvYWRz/LzIwMjAvMTAvTWFy/Y2FfVU5BTi1NYW5h/Z3VhLUpQRy1zY2Fs/ZWQuanBn" alt="UNAN Left">
+                        </div>
+                        <div class="cube-face face-top">
+                            <img src="https://imgs.search.brave.com/LcESPZNYi1HE0FHaCKChuDb-Kz4rYKgNQ8wcU6wj2wY/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/Z3J1cG9sYXJhYmlk/YS5vcmcvd3AtY29u/dGVudC91cGxvYWRz/LzIwMjAvMTAvTWFy/Y2FfVU5BTi1NYW5h/Z3VhLUpQRy1zY2Fs/ZWQuanBn" alt="UNAN Top">
+                        </div>
+                        <div class="cube-face face-bottom">
+                            <img src="https://imgs.search.brave.com/LcESPZNYi1HE0FHaCKChuDb-Kz4rYKgNQ8wcU6wj2wY/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/Z3J1cG9sYXJhYmlk/YS5vcmcvd3AtY29u/dGVudC91cGxvYWRz/LzIwMjAvMTAvTWFy/Y2FfVU5BTi1NYW5h/Z3VhLUpQRy1zY2Fs/ZWQuanBn" alt="UNAN Bottom">
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="hero-title">Diseño de un Sistema Domótico con Monitoreo Remoto por Fibra Óptica</h2>
+                <p class="hero-description">
+                    Solución de automatización industrial y residencial aplicada a la vivienda 1590 del Residencial Bismarck Martínez (Sabana Grande, Managua). Integración de controladores <strong>Siemens LOGO! 8.3</strong>, <strong>ESP32 Dev Modules</strong>, topología GPON FTTH y telemetría en tiempo real sobre <strong>Node-RED & ThingsBoard Cloud</strong>.
+                </p>
+            </div>
+
+            <!-- Team / University Data -->
+            <div class="authors-card">
+                <h3><i class="fa-solid fa-users"></i> Equipo Integrante</h3>
+                <ul class="authors-list">
+                    <li><i class="fa-solid fa-user-astronaut"></i> Br. Amy Alondra González Corea</li>
+                    <li><i class="fa-solid fa-user-astronaut"></i> Br. Ángel David Palma Martínez</li>
+                    <li><i class="fa-solid fa-user-astronaut"></i> Br. Ángel Eduardo Bolaños Aguirre</li>
+                    <li><i class="fa-solid fa-user-astronaut"></i> Br. Elías Antonio Zeledón Vásquez</li>
+                    <li><i class="fa-solid fa-user-astronaut"></i> Br. Noel Antonio Hernández Sandoval</li>
+                </ul>
+                <div class="tutor-info">
+                    <p><strong>Docente Tutor:</strong> MSc. Álvaro Segovia</p>
+                    <p><strong>Fecha de Emisión:</strong> Noviembre 04, 2026</p>
+                    <p><strong>Ubicación:</strong> Recinto Universitario Rubén Darío, Managua</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="main-container">
+            
+            <!-- Dashboard Redirect Section -->
+            <section id="dashboard">
+                <div class="section-header">
+                    <h2>Panel de Control & Monitoreo en Tiempo Real</h2>
+                    <p>Acceso directo a la interfaz Node-RED Dashboard para la supervisión y control del sistema domótico</p>
+                </div>
+
+                <div class="dashboard-access-card">
+                    <i class="fa-solid fa-server" style="font-size: 3.5rem; color: var(--accent-emerald); margin-bottom: 1.5rem;"></i>
+                    <h3 style="font-size: 1.4rem; margin-bottom: 1rem;">Servidor Node-RED Activo</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                        Haz clic en el siguiente botón para abrir el Dashboard interactivo alojado en el servidor local.
+                    </p>
+                    <a href="http://192.168.104.152:1880/ui" target="_blank" class="btn-access-dashboard">
+                        <i class="fa-solid fa-gauge-high"></i> Abrir Dashboard (192.168.104.152)
+                    </a>
+                </div>
+            </section>
+
+            <!-- 3D Interactive Floor Plan Section -->
+            <section id="plano3d">
+                <div class="section-header">
+                    <h2>Plano 3D Interactivo de la Vivienda</h2>
+                    <p>Modelo tridimensional de distribución arquitectónica y sensores IoT integrados</p>
+                </div>
+
+                <div style="position: relative; width: 100%; height: 650px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); box-shadow: 0 15px 35px rgba(0,0,0,0.4); background: #0f172a;">
+                    <!-- Tailwind CSS -->
+                    <script src="https://cdn.tailwindcss.com"></script>
+                    <!-- Three.js & OrbitControls -->
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+                    <!-- UI Overlay / Control Panel -->
+                    <div class="absolute top-4 left-4 z-10 bg-slate-800/90 backdrop-blur-md p-4 rounded-xl shadow-xl border border-slate-700 max-w-sm select-none">
+                        <h3 class="text-lg font-bold mb-1 text-emerald-400">Controles de Cámara</h3>
+                        <p class="text-xs text-slate-300 mb-3">Réplica interactiva completa. Usa el ratón para rotar, hacer zoom y desplazarte.</p>
+                        
+                        <div class="space-y-2">
+                            <div class="text-xs font-semibold uppercase tracking-wider text-slate-400">Vista</div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button id="btn-isometric" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium rounded-lg transition shadow cursor-pointer">Isométrica</button>
+                                <button id="btn-topdown" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 text-white text-xs font-medium rounded-lg transition shadow cursor-pointer">Planta (2D)</button>
+                            </div>
+                            <button id="btn-reset" class="w-full px-3 py-2 bg-slate-700 hover:bg-slate-600 text-white text-xs font-medium rounded-lg transition shadow cursor-pointer">Restaurar Vista</button>
+                            
+                            <div class="pt-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Opciones</div>
+                            <button id="btn-wireframe" class="w-full px-3 py-2 bg-slate-700 hover:bg-slate-600 text-white text-xs font-medium rounded-lg transition shadow cursor-pointer">Alternar Muros (Rayos X)</button>
+                        </div>
+                    </div>
+
+                    <!-- Legend / Room distribution -->
+                    <div class="absolute bottom-4 left-4 z-10 bg-slate-800/90 backdrop-blur-md p-3 rounded-xl shadow-xl border border-slate-700 text-xs space-y-1 select-none hidden sm:block">
+                        <div class="font-bold text-slate-200 mb-1">Distribución:</div>
+                        <div class="flex items-center space-x-2"><span class="w-3 h-3 bg-blue-500 rounded-full inline-block"></span><span>Sala / Comedor / Cocina (Izquierda)</span></div>
+                        <div class="flex items-center space-x-2"><span class="w-3 h-3 bg-purple-500 rounded-full inline-block"></span><span>Pasillo Distribuidor Central</span></div>
+                        <div class="flex items-center space-x-2"><span class="w-3 h-3 bg-pink-500 rounded-full inline-block"></span><span>Recámara 2 Camas (Arriba)</span></div>
+                        <div class="flex items-center space-x-2"><span class="w-3 h-3 bg-cyan-500 rounded-full inline-block"></span><span>Baño (Centro)</span></div>
+                        <div class="flex items-center space-x-2"><span class="w-3 h-3 bg-indigo-500 rounded-full inline-block"></span><span>Recámara Principal (Abajo)</span></div>
+                        <div class="flex items-center space-x-2"><span class="w-3 h-3 bg-sky-600 rounded-full inline-block"></span><span>Tanque de Agua Exterior</span></div>
+                        <div class="flex items-center space-x-2"><span class="w-3 h-3 bg-emerald-500 rounded-full inline-block"></span><span>Jardín con Pasto (Exterior)</span></div>
+                    </div>
+
+                    <!-- Container for Three.js Canvas -->
+                    <div id="canvas-container" style="width: 100%; height: 100%;"></div>
+
+                    <script>
+                        // Global variables for Three.js
+                        let scene, camera, renderer, controls;
+                        let wallsGroup = new THREE.Group();
+                        let furnitureGroup = new THREE.Group();
+                        let isWireframe = false;
+
+                        function init() {
+                            const container = document.getElementById('canvas-container');
+                            if (!container) return;
+                            
+                            // 1. Scene setup
+                            scene = new THREE.Scene();
+                            scene.background = new THREE.Color(0x0f172a);
+                            scene.fog = new THREE.FogExp2(0x0f172a, 0.012);
+
+                            // 2. Camera setup
+                            camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+                            camera.position.set(16, 20, 22);
+
+                            // 3. Renderer setup
+                            renderer = new THREE.WebGLRenderer({ antialias: true });
+                            renderer.setSize(container.clientWidth, container.clientHeight);
+                            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                            renderer.shadowMap.enabled = true;
+                            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+                            container.appendChild(renderer.domElement);
+
+                            // 4. OrbitControls setup
+                            controls = new THREE.OrbitControls(camera, renderer.domElement);
+                            controls.enableDamping = true;
+                            controls.dampingFactor = 0.05;
+                            controls.maxPolarAngle = Math.PI / 2 - 0.02;
+                            controls.target.set(0, 0, -1);
+
+                            // 5. Lighting setup
+                            const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
+                            scene.add(ambientLight);
+
+                            const dirLight = new THREE.DirectionalLight(0xffffff, 0.85);
+                            dirLight.position.set(20, 30, 20);
+                            dirLight.castShadow = true;
+                            dirLight.shadow.mapSize.width = 2048;
+                            dirLight.shadow.mapSize.height = 2048;
+                            dirLight.shadow.camera.near = 0.5;
+                            dirLight.shadow.camera.far = 100;
+                            const d = 25;
+                            dirLight.shadow.camera.left = -d;
+                            dirLight.shadow.camera.right = d;
+                            dirLight.shadow.camera.top = d;
+                            dirLight.shadow.camera.bottom = -d;
+                            scene.add(dirLight);
+
+                            const pointLight = new THREE.PointLight(0xffeedd, 0.5, 40);
+                            pointLight.position.set(0, 10, 0);
+                            scene.add(pointLight);
+
+                            // 6. Build Scene Objects
+                            buildGrassEnvironment();
+                            buildHouseFloor();
+                            buildWalls();
+                            buildFurniture();
+                            buildWaterTankPlatform(-5.5, 0, -9.5);
+
+                            scene.add(wallsGroup);
+                            scene.add(furnitureGroup);
+
+                            // 7. Event Listeners & UI Controls
+                            window.addEventListener('resize', onWindowResize);
+                            setupUI();
+
+                            // 8. Start Rendering Loop
+                            animate();
+                        }
+
+                        // Outdoor Grass Environment Around the House
+                        function buildGrassEnvironment() {
+                            const grassGeo = new THREE.PlaneGeometry(45, 40);
+                            
+                            const canvas = document.createElement('canvas');
+                            canvas.width = 256;
+                            canvas.height = 256;
+                            const ctx = canvas.getContext('2d');
+                            
+                            ctx.fillStyle = '#2e7d32';
+                            ctx.fillRect(0, 0, 256, 256);
+                            
+                            for (let i = 0; i < 15000; i++) {
+                                const x = Math.random() * 256;
+                                const y = Math.random() * 256;
+                                const rand = Math.random();
+                                if (rand > 0.6) {
+                                    ctx.fillStyle = '#388e3c';
+                                } else if (rand > 0.3) {
+                                    ctx.fillStyle = '#1b5e20';
+                                } else {
+                                    ctx.fillStyle = '#4caf50';
+                                }
+                                ctx.fillRect(x, y, 2, 3);
+                            }
+                            
+                            const grassTex = new THREE.CanvasTexture(canvas);
+                            grassTex.wrapS = THREE.RepeatWrapping;
+                            grassTex.wrapT = THREE.RepeatWrapping;
+                            grassTex.repeat.set(16, 14);
+                            
+                            const grassMat = new THREE.MeshStandardMaterial({
+                                map: grassTex,
+                                roughness: 0.9,
+                                metalness: 0.05
+                            });
+                            
+                            const grassMesh = new THREE.Mesh(grassGeo, grassMat);
+                            grassMesh.rotation.x = -Math.PI / 2;
+                            grassMesh.position.set(0, -0.02, -2);
+                            grassMesh.receiveShadow = true;
+                            scene.add(grassMesh);
+                        }
+
+                        // Interior Floor and Grid
+                        function buildHouseFloor() {
+                            const floorGeo = new THREE.PlaneGeometry(14, 12);
+                            const floorMat = new THREE.MeshStandardMaterial({ 
+                                color: 0xf1f5f9, 
+                                roughness: 0.6,
+                                metalness: 0.1
+                            });
+                            const floor = new THREE.Mesh(floorGeo, floorMat);
+                            floor.rotation.x = -Math.PI / 2;
+                            floor.receiveShadow = true;
+                            scene.add(floor);
+
+                            const grid = new THREE.GridHelper(14, 14, 0x94a3b8, 0xcbafb8);
+                            grid.position.y = 0.01;
+                            scene.add(grid);
+
+                            const patioGeo = new THREE.PlaneGeometry(16, 8);
+                            const patioMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.8 });
+                            const patio = new THREE.Mesh(patioGeo, patioMat);
+                            patio.rotation.x = -Math.PI / 2;
+                            patio.position.set(0, -0.01, -10);
+                            patio.receiveShadow = true;
+                            scene.add(patio);
+                        }
+
+                        function createWall(w, h, d, x, y, z, mat) {
+                            const geo = new THREE.BoxGeometry(w, h, d);
+                            const mesh = new THREE.Mesh(geo, mat);
+                            mesh.position.set(x, y, z);
+                            mesh.castShadow = true;
+                            mesh.receiveShadow = true;
+                            wallsGroup.add(mesh);
+                            return mesh;
+                        }
+
+                        function createDoor(w, h, x, y, z, rotationY = 0) {
+                            const doorGroup = new THREE.Group();
+                            const frameMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.5 });
+                            const frameThick = 0.08;
+                            
+                            const leftFrame = new THREE.Mesh(new THREE.BoxGeometry(frameThick, h, 0.22), frameMat);
+                            leftFrame.position.set(-w / 2 + frameThick / 2, h / 2, 0);
+                            doorGroup.add(leftFrame);
+                            
+                            const rightFrame = new THREE.Mesh(new THREE.BoxGeometry(frameThick, h, 0.22), frameMat);
+                            rightFrame.position.set(w / 2 - frameThick / 2, h / 2, 0);
+                            doorGroup.add(rightFrame);
+
+                            const topFrame = new THREE.Mesh(new THREE.BoxGeometry(w, frameThick, 0.22), frameMat);
+                            topFrame.position.set(0, h - frameThick / 2, 0);
+                            doorGroup.add(topFrame);
+
+                            const doorMat = new THREE.MeshStandardMaterial({ color: 0x7c2d12, roughness: 0.6 });
+                            const leafW = w - frameThick * 2;
+                            const leafH = h - frameThick;
+                            const leafMesh = new THREE.Mesh(new THREE.BoxGeometry(leafW, leafH, 0.05), doorMat);
+                            leafMesh.position.set(leafW / 2, leafH / 2, 0);
+                            
+                            const hingeGroup = new THREE.Group();
+                            hingeGroup.position.set(-w / 2 + frameThick, 0, 0);
+                            hingeGroup.add(leafMesh);
+                            hingeGroup.rotation.y = Math.PI / 4;
+                            
+                            const knobMat = new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.8, roughness: 0.2 });
+                            const knob = new THREE.Mesh(new THREE.SphereGeometry(0.04, 16, 16), knobMat);
+                            knob.position.set(leafW - 0.08, leafH / 2, 0.04);
+                            hingeGroup.add(knob);
+
+                            doorGroup.add(hingeGroup);
+                            doorGroup.position.set(x, y, z);
+                            doorGroup.rotation.y = rotationY;
+                            wallsGroup.add(doorGroup);
+                        }
+
+                        function drawCanvasLabel(text, bgColor) {
+                            const labelCanvas = document.createElement('canvas');
+                            labelCanvas.width = 256;
+                            labelCanvas.height = 64;
+                            const ctx = labelCanvas.getContext('2d');
+                            
+                            ctx.fillStyle = bgColor;
+                            ctx.fillRect(0, 0, 256, 64);
+                            
+                            ctx.fillStyle = '#ffffff';
+                            ctx.font = 'Bold 24px Inter, sans-serif';
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'middle';
+                            ctx.fillText(text, 128, 32);
+                            
+                            const labelTex = new THREE.CanvasTexture(labelCanvas);
+                            const labelSpriteMat = new THREE.SpriteMaterial({ map: labelTex });
+                            return new THREE.Sprite(labelSpriteMat);
+                        }
+
+                        function createMotionSensor(x, y, z, rotationY = 0) {
+                            const sensorGroup = new THREE.Group();
+
+                            const baseMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.3 });
+                            const baseMesh = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.15, 0.08), baseMat);
+                            baseMesh.castShadow = true;
+                            sensorGroup.add(baseMesh);
+
+                            const lensMat = new THREE.MeshPhysicalMaterial({ 
+                                color: 0xe2e8f0, roughness: 0.1, transmission: 0.6, transparent: true, opacity: 0.85
+                            });
+                            const lensMesh = new THREE.Mesh(new THREE.SphereGeometry(0.05, 16, 16, 0, Math.PI * 2, 0, Math.PI / 2), lensMat);
+                            lensMesh.rotation.x = Math.PI / 2;
+                            lensMesh.position.set(0, -0.01, 0.04);
+                            sensorGroup.add(lensMesh);
+
+                            const ledMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
+                            const ledMesh = new THREE.Mesh(new THREE.SphereGeometry(0.015, 8, 8), ledMat);
+                            ledMesh.position.set(0.06, 0.04, 0.04);
+                            sensorGroup.add(ledMesh);
+
+                            const labelSprite = drawCanvasLabel('Sensor Movimiento', '#ef4444');
+                            labelSprite.scale.set(1.2, 0.3, 1);
+                            labelSprite.position.set(0, 0.35, 0);
+                            sensorGroup.add(labelSprite);
+
+                            sensorGroup.position.set(x, y, z);
+                            sensorGroup.rotation.y = rotationY;
+                            wallsGroup.add(sensorGroup);
+                        }
+
+                        function createGasSensor(x, y, z, rotationY = 0) {
+                            const sensorGroup = new THREE.Group();
+
+                            const bodyMat = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, roughness: 0.25 });
+                            const body = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.08, 24), bodyMat);
+                            body.rotation.x = Math.PI / 2;
+                            body.castShadow = true;
+                            sensorGroup.add(body);
+
+                            const ventMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.5 });
+                            const vent = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.085, 16), ventMat);
+                            vent.rotation.x = Math.PI / 2;
+                            sensorGroup.add(vent);
+
+                            const greenLedMat = new THREE.MeshBasicMaterial({ color: 0x22c55e });
+                            const greenLed = new THREE.Mesh(new THREE.SphereGeometry(0.012, 8, 8), greenLedMat);
+                            greenLed.position.set(-0.06, 0, 0.045);
+                            sensorGroup.add(greenLed);
+
+                            const labelSprite = drawCanvasLabel('Sensor de Gas', '#0284c7');
+                            labelSprite.scale.set(1.2, 0.3, 1);
+                            labelSprite.position.set(0, 0.35, 0);
+                            sensorGroup.add(labelSprite);
+
+                            sensorGroup.position.set(x, y, z);
+                            sensorGroup.rotation.y = rotationY;
+                            wallsGroup.add(sensorGroup);
+                        }
+
+                        function buildWalls() {
+                            const wallHeight = 2.4;
+                            const th = 0.2;
+                            const wallMat = new THREE.MeshStandardMaterial({ color: 0xaa5b91, roughness: 0.4 });
+                            const lintelMat = new THREE.MeshStandardMaterial({ color: 0x8a4574, roughness: 0.4 });
+                            const glassMat = new THREE.MeshPhysicalMaterial({
+                                color: 0x93c5fd, transparent: true, opacity: 0.5, roughness: 0.1, transmission: 0.8, thickness: 0.1
+                            });
+
+                            const doorHeight = 1.8;
+                            const lintelHeight = wallHeight - doorHeight;
+                            const lintelY = wallHeight - (lintelHeight / 2);
+
+                            const winSillH = 0.9;
+                            const winH = 1.0;
+                            const winTopH = wallHeight - (winSillH + winH);
+
+                            createWall(14, wallHeight, th, 0, wallHeight / 2, -6, wallMat);
+                            createWall(th, wallHeight, 12, 7, wallHeight / 2, 0, wallMat);
+                            createWall(th, wallHeight, 12, -7, wallHeight / 2, 0, wallMat);
+                            
+                            createWall(1.7, wallHeight, th, -6.15, wallHeight / 2, 6, wallMat);
+                            
+                            createWall(1.4, winSillH, th, -4.6, winSillH / 2, 6, wallMat);
+                            createWall(1.4, winTopH, th, -4.6, wallHeight - (winTopH / 2), 6, wallMat);
+                            createWall(0.05, winH, th, -5.3, winSillH + (winH / 2), 6, wallMat);
+                            createWall(0.05, winH, th, -3.9, winSillH + (winH / 2), 6, wallMat);
+                            const glass1 = new THREE.Mesh(new THREE.BoxGeometry(1.4, winH, 0.08), glassMat);
+                            glass1.position.set(-4.6, winSillH + (winH / 2), 6);
+                            wallsGroup.add(glass1);
+
+                            createWall(1.2, wallHeight, th, -3.3, wallHeight / 2, 6, wallMat);
+
+                            createWall(1.2, lintelHeight, th, -2.1, lintelY, 6, lintelMat);
+                            createDoor(1.2, doorHeight, -2.1, 0, 6, 0);
+
+                            createMotionSensor(-2.1, doorHeight + 0.15, 6.12, 0);
+                            createGasSensor(-5.5, 1.6, -5.88, 0);
+
+                            createWall(4.1, wallHeight, th, 0.55, wallHeight / 2, 6, wallMat);
+
+                            createWall(1.4, winSillH, th, 3.3, winSillH / 2, 6, wallMat);
+                            createWall(1.4, winTopH, th, 3.3, wallHeight - (winTopH / 2), 6, wallMat);
+                            createWall(0.05, winH, th, 2.6, winSillH + (winH / 2), 6, wallMat);
+                            createWall(0.05, winH, th, 4.0, winSillH + (winH / 2), 6, wallMat);
+                            const glass2 = new THREE.Mesh(new THREE.BoxGeometry(1.4, winH, 0.08), glassMat);
+                            glass2.position.set(3.3, winSillH + (winH / 2), 6);
+                            wallsGroup.add(glass2);
+
+                            createWall(3.0, wallHeight, th, 5.5, wallHeight / 2, 6, wallMat);
+
+                            createWall(th, wallHeight, 4.0, 0, wallHeight / 2, -4.0, wallMat);
+                            createWall(th, wallHeight, 4.0, 0, wallHeight / 2, 4.0, wallMat);
+
+                            createWall(0.5, wallHeight, th, 0.25, wallHeight / 2, -2.0, wallMat);
+                            createWall(1.1, lintelHeight, th, 1.05, lintelY, -2.0, lintelMat);
+                            createDoor(1.1, doorHeight, 1.05, 0, -2.0, 0);
+                            
+                            createWall(0.5, wallHeight, th, 0.25, wallHeight / 2, 2.0, wallMat);
+                            createWall(1.1, lintelHeight, th, 1.05, lintelY, 2.0, lintelMat);
+                            createDoor(1.1, doorHeight, 1.05, 0, 2.0, 0);
+
+                            createWall(th, 0.7, 4.0, 1.6, wallHeight - 0.35, 0, lintelMat);
+                            createWall(th, wallHeight, 1.5, 1.6, wallHeight / 2, -1.25, wallMat);
+                            createWall(th, wallHeight, 1.5, 1.6, wallHeight / 2, 1.25, wallMat);
+                            createDoor(1.0, doorHeight, 1.6, 0, 0, Math.PI / 2);
+
+                            createWall(5.4, wallHeight, th, 4.3, wallHeight / 2, -2.0, wallMat);
+                            createWall(5.4, wallHeight, th, 4.3, wallHeight / 2, 1.5, wallMat);
+                        }
+
+                        function buildFurniture() {
+                            const woodMat = new THREE.MeshStandardMaterial({ color: 0x854d0e, roughness: 0.6 });
+                            const fabricMat = new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.8 });
+                            const bedMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.9 });
+                            const darkMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.5 });
+                            const metalMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.8, roughness: 0.2 });
+
+                            const counter = new THREE.Mesh(new THREE.BoxGeometry(3.5, 0.9, 1.2), darkMat);
+                            counter.position.set(-4.5, 0.45, -5.3);
+                            furnitureGroup.add(counter);
+
+                            const stove = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.05, 0.8), metalMat);
+                            stove.position.set(-5.5, 0.92, -5.3);
+                            furnitureGroup.add(stove);
+
+                            const sink = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.02, 0.6), metalMat);
+                            sink.position.set(-3.5, 0.91, -5.3);
+                            furnitureGroup.add(sink);
+
+                            const table = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.75, 1.8), woodMat);
+                            table.position.set(-4.0, 0.375, -1.0);
+                            table.castShadow = true;
+                            furnitureGroup.add(table);
+
+                            const chairGeo = new THREE.BoxGeometry(0.5, 0.45, 0.5);
+                            const chairPositions = [
+                                [-4.0, 0.225, -2.2], [-4.0, 0.225, 0.2], [-5.2, 0.225, -1.0], [-2.8, 0.225, -1.0]
+                            ];
+                            chairPositions.forEach(pos => {
+                                const chair = new THREE.Mesh(chairGeo, fabricMat);
+                                chair.position.set(pos[0], pos[1], pos[2]);
+                                furnitureGroup.add(chair);
+                            });
+
+                            const sofaBase1 = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.45, 3.5), fabricMat);
+                            sofaBase1.position.set(-5.8, 0.225, 3.5);
+                            furnitureGroup.add(sofaBase1);
+
+                            const sofaBase2 = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.45, 1.2), fabricMat);
+                            sofaBase2.position.set(-4.1, 0.225, 4.65);
+                            furnitureGroup.add(sofaBase2);
+
+                            const coffeeTable = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.35, 1.0), woodMat);
+                            coffeeTable.position.set(-3.8, 0.175, 3.0);
+                            furnitureGroup.add(coffeeTable);
+
+                            const bed1 = createBed(1.4, 2.0, woodMat, bedMat);
+                            bed1.position.set(4.5, 0, -4.8);
+                            furnitureGroup.add(bed1);
+
+                            const bed2 = createBed(1.4, 2.0, woodMat, bedMat);
+                            bed2.position.set(4.5, 0, -2.8);
+                            furnitureGroup.add(bed2);
+
+                            const tubMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.1 });
+                            const tub = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.6, 1.2), tubMat);
+                            tub.position.set(5.5, 0.3, -0.2);
+                            furnitureGroup.add(tub);
+
+                            const vanity = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.75, 0.6), woodMat);
+                            vanity.position.set(2.4, 0.375, 0.8);
+                            furnitureGroup.add(vanity);
+
+                            const masterBed = createBed(2.2, 2.2, woodMat, bedMat);
+                            masterBed.position.set(4.5, 0, 3.8);
+                            furnitureGroup.add(masterBed);
+                        }
+
+                        function createBed(width, length, frameMat, sheetMat) {
+                            const group = new THREE.Group();
+                            
+                            const frame = new THREE.Mesh(new THREE.BoxGeometry(width, 0.3, length), frameMat);
+                            frame.position.y = 0.15;
+                            frame.castShadow = true;
+                            group.add(frame);
+
+                            const mattress = new THREE.Mesh(new THREE.BoxGeometry(width - 0.1, 0.3, length - 0.1), sheetMat);
+                            mattress.position.y = 0.35;
+                            mattress.castShadow = true;
+                            group.add(mattress);
+
+                            const pillow = new THREE.Mesh(new THREE.BoxGeometry(width - 0.4, 0.12, 0.4), sheetMat);
+                            pillow.position.set(0, 0.52, (length / 2) - 0.3);
+                            group.add(pillow);
+
+                            return group;
+                        }
+
+                        function buildWaterTankPlatform(posX = -5.5, posY = 0, posZ = -9.5) {
+                            const platformGroup = new THREE.Group();
+                            const platformHeight = 3.6;
+
+                            const metalMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8, roughness: 0.3 });
+                            const tankMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.3, metalness: 0.1 });
+                            const pipeMat = new THREE.MeshStandardMaterial({ color: 0x64748b, metalness: 0.6, roughness: 0.4 });
+
+                            const pillarGeo = new THREE.CylinderGeometry(0.12, 0.12, platformHeight, 16);
+                            const offset = 1.4;
+
+                            const p1 = new THREE.Mesh(pillarGeo, metalMat);
+                            p1.position.set(-offset, platformHeight / 2, -offset);
+                            platformGroup.add(p1);
+
+                            const p2 = new THREE.Mesh(pillarGeo, metalMat);
+                            p2.position.set(offset, platformHeight / 2, -offset);
+                            platformGroup.add(p2);
+
+                            const p3 = new THREE.Mesh(pillarGeo, metalMat);
+                            p3.position.set(-offset, platformHeight / 2, offset);
+                            platformGroup.add(p3);
+
+                            const p4 = new THREE.Mesh(pillarGeo, metalMat);
+                            p4.position.set(offset, platformHeight / 2, offset);
+                            platformGroup.add(p4);
+
+                            const deck = new THREE.Mesh(new THREE.BoxGeometry(3.4, 0.25, 3.4), metalMat);
+                            deck.position.set(0, platformHeight, 0);
+                            platformGroup.add(deck);
+
+                            const tankRadius = 1.4;
+                            const tankHeight = 2.8;
+                            const tankBody = new THREE.Mesh(new THREE.CylinderGeometry(tankRadius, tankRadius, tankHeight, 32), tankMat);
+                            tankBody.position.set(0, platformHeight + 0.125 + (tankHeight / 2), 0);
+                            tankBody.castShadow = true;
+                            platformGroup.add(tankBody);
+
+                            const capHeight = 0.5;
+                            const cap = new THREE.Mesh(new THREE.ConeGeometry(tankRadius + 0.08, capHeight, 32), metalMat);
+                            cap.position.set(0, platformHeight + 0.125 + tankHeight + (capHeight / 2), 0);
+                            platformGroup.add(cap);
+
+                            const pipe = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, platformHeight + 1.0, 16), pipeMat);
+                            pipe.position.set(-1.1, (platformHeight + 1.0) / 2, 1.2);
+                            platformGroup.add(pipe);
+
+                            const labelSprite = drawCanvasLabel('Tanque de Agua', '#0284c7');
+                            labelSprite.scale.set(1.6, 0.4, 1);
+                            labelSprite.position.set(0, platformHeight + tankHeight + capHeight + 0.6, 0);
+                            platformGroup.add(labelSprite);
+
+                            platformGroup.position.set(posX, posY, posZ);
+                            wallsGroup.add(platformGroup);
+                        }
+
+                        function setupUI() {
+                            document.getElementById('btn-isometric').addEventListener('click', () => {
+                                gsapCamera(16, 20, 22);
+                            });
+
+                            document.getElementById('btn-topdown').addEventListener('click', () => {
+                                gsapCamera(0, 26, 0.01);
+                            });
+
+                            document.getElementById('btn-reset').addEventListener('click', () => {
+                                gsapCamera(16, 20, 22);
+                            });
+
+                            document.getElementById('btn-wireframe').addEventListener('click', () => {
+                                isWireframe = !isWireframe;
+                                wallsGroup.children.forEach(child => {
+                                    if (child.material) {
+                                        child.material.wireframe = isWireframe;
+                                    }
+                                    if (child.children) {
+                                        child.children.forEach(c => {
+                                            if (c.material) c.material.wireframe = isWireframe;
+                                        });
+                                    }
+                                });
+                            });
+                        }
+
+                        function gsapCamera(x, y, z) {
+                            const startPos = { x: camera.position.x, y: camera.position.y, z: camera.position.z };
+                            const duration = 600;
+                            const startTime = performance.now();
+
+                            function updateCam(now) {
+                                const elapsed = now - startTime;
+                                const progress = Math.min(elapsed / duration, 1);
+                                const ease = progress * (2 - progress);
+
+                                camera.position.x = startPos.x + (x - startPos.x) * ease;
+                                camera.position.y = startPos.y + (y - startPos.y) * ease;
+                                camera.position.z = startPos.z + (z - startPos.z) * ease;
+                                controls.update();
+
+                                if (progress < 1) {
+                                    requestAnimationFrame(updateCam);
+                                }
+                            }
+
+                            requestAnimationFrame(updateCam);
+                        }
+
+                        function onWindowResize() {
+                            const container = document.getElementById('canvas-container');
+                            if (!container) return;
+                            camera.aspect = container.clientWidth / container.clientHeight;
+                            camera.updateProjectionMatrix();
+                            renderer.setSize(container.clientWidth, container.clientHeight);
+                        }
+
+                        function animate() {
+                            requestAnimationFrame(animate);
+                            controls.update();
+                            renderer.render(scene, camera);
+                        }
+
+                        window.addEventListener('DOMContentLoaded', init);
+                    </script>
+                </div>
+            </section>
+
+            <!-- Architecture & Diagram Section -->
+            <section id="arquitectura">
+                <div class="section-header">
+                    <h2>Arquitectura de Comunicación IoT & Fibra Óptica</h2>
+                    <p>Distribución jerárquica en 4 niveles desde los dispositivos de campo hasta las plataformas Cloud</p>
+                </div>
+
+                <div class="arch-diagram">
+                    <div class="layer-grid">
+                        <div class="layer-card" style="border-color: #f87171;">
+                            <div class="layer-title"><i class="fa-solid fa-microchip"></i> Nivel 1: Campo</div>
+                            <div class="layer-desc">Sensores de campo (MQ-2, PIR HC-SR501, Flotador Magnético Eicos LA36M-40) y actuadores (Bomba 120V TRUPER, Contactor KM1, Sirena Local, Luminarias LED).</div>
+                        </div>
+                        <div class="layer-card" style="border-color: #fbbf24;">
+                            <div class="layer-title"><i class="fa-solid fa-cpu"></i> Nivel 2: Control</div>
+                            <div class="layer-desc">Microcontroladores ESP32 Dev Module (Procesamiento analógico/digital y WiFi local) + PLC Siemens LOGO! 8.3 (Lógica industrial de autorretención FBD).</div>
+                        </div>
+                        <div class="layer-card" style="border-color: #22d3ee;">
+                            <div class="layer-title"><i class="fa-solid fa-network-wired"></i> Nivel 3: Conectividad</div>
+                            <div class="layer-desc">Enlace FTTH GPON (Claro Nicaragua) desde Estación Base Sabana Grande (~1.8km), ONT Residencial, Broker MQTT Mosquitto local y communication Ethernet Modbus TCP / S7.</div>
+                        </div>
+                        <div class="layer-card" style="border-color: #34d399;">
+                            <div class="layer-title"><i class="fa-solid fa-cloud"></i> Nivel 4: Gestión Cloud</div>
+                            <div class="layer-desc">Servidor de integración Node-RED con Dashboard 2.0, ThingsBoard Cloud para almacenamiento de telemetría y alertas push a Gmail / WhatsApp.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Technical Equations & Specifications -->
+            <section id="especificaciones">
+                <div class="section-header">
+                    <h2>Ecuaciones Lógicas de Control & Especificaciones</h2>
+                    <p>Fundamentos de programación FBD para el Siemens LOGO! 8.3 e inventario técnico</p>
+                </div>
+
+                <h3 style="font-size: 1.1rem; margin-bottom: 0.8rem; color: var(--accent-emerald);"><i class="fa-solid fa-code"></i> Ecuaciones de Lógica Booleana (LOGO! Soft)</h3>
+                <div class="code-block">
+// Sistema de Control de Llenado de Tanque de Agua (Lazo Cerrado)
+M1 (Marca Sistema Activo) = RS_FlipFlop(Set: I1 [START], Reset: I2 [STOP] + I3 [EMERGENCIA])
+Q1 (Indicador Marcha)    = M1
+Q3 (Contactor Bomba KM1) = M1 AND (NOT I4 [Sensor Flotador LA36M-40])
+Q2 (Alerta Paro/Falla)   = (B004 [Paro] AND (NOT B006)) OR Pulse_1s(B006 [Emergencia])
+
+// Sistemas de Seguridad ESP32
+Q_Gas (Alarma Sonora)    = Temporizador_1s( (AI1_MQ2 > Threshold_600) AND M1 )
+Q_PIR (Luminaria Intru)  = Temporizador_3s( I4_PIR AND M1 )
+                </div>
+
+                <h3 style="font-size: 1.1rem; margin-bottom: 0.8rem; color: var(--accent-emerald);"><i class="fa-solid fa-table"></i> Especificaciones de Equipamiento Principal</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Dispositivo</th>
+                                <th>Especificaciones Técnicas Principales</th>
+                                <th>Protocolo / Interfaz</th>
+                                <th>Función en el Prototipo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Siemens LOGO! 8.3</strong></td>
+                                <td>12/24V DC, 8 ED (4 AI 0-10V), 4 Salidas Relé 10A, Display LCD.</td>
+                                <td>Ethernet (Modbus TCP / S7)</td>
+                                <td>Control automático de bomba y enclavamiento de seguridad.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>ESP32 Dev Module</strong></td>
+                                <td>Xtensa Dual-Core 32-bit, 240MHz, 520KB SRAM, Wi-Fi 2.4GHz + BT.</td>
+                                <td>Wi-Fi / MQTT / HTTP</td>
+                                <td>Adquisición de sensores MQ-2/PIR y transmisión IoT.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sensor MQ-2</strong></td>
+                                <td>Semiconductor SnO2, rango 300-10,000 ppm (GLP, metano, humo).</td>
+                                <td>Analógica (0-5V) / Digital</td>
+                                <td>Detección temprana de fugas de gas en cocina.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Eicos LA36M-40</strong></td>
+                                <td>Flotador magnético lateral, contacto Reed Switch discreto ON/OFF.</td>
+                                <td>Entrada Digital (I4 PLC)</td>
+                                <td>Corte automático por nivel máximo en el tanque.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Infraestructura GPON</strong></td>
+                                <td>Acometida Drop Monomodo G.657.A, ONT FTTH SC/APC.</td>
+                                <td>Fibra Óptica FTTH</td>
+                                <td>Enlace de alta velocidad con la Estación Base Sabana Grande.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 Universidad Nacional Autónoma de Nicaragua, Managua (UNAN-Managua). Todos los derechos reservados.</p>
+        <p>Departamento de Tecnología | Carrera de Ingeniería Electrónica</p>
+    </footer>
+
+    <!-- Interactive Drag-to-Rotate Script for 3D Cube -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('cubeContainer');
+            const cube = document.getElementById('cube');
+            
+            let isDragging = false;
+            let startX = 0;
+            let startY = 0;
+            let currentRotationX = -20;
+            let currentRotationY = 25;
+
+            const startDrag = (e) => {
+                isDragging = true;
+                cube.style.animationPlayState = 'paused';
+                const pageX = e.touches ? e.touches[0].pageX : e.pageX;
+                const pageY = e.touches ? e.touches[0].pageY : e.pageY;
+                startX = pageX;
+                startY = pageY;
+            };
+
+            const doDrag = (e) => {
+                if (!isDragging) return;
+                const pageX = e.touches ? e.touches[0].pageX : e.pageX;
+                const pageY = e.touches ? e.touches[0].pageY : e.pageY;
+                const deltaX = pageX - startX;
+                const deltaY = pageY - startY;
+
+                currentRotationY += deltaX * 0.5;
+                currentRotationX -= deltaY * 0.5;
+
+                cube.style.transform = `rotateX(${currentRotationX}deg) rotateY(${currentRotationY}deg)`;
+
+                startX = pageX;
+                startY = pageY;
+            };
+
+            const endDrag = () => {
+                if (isDragging) {
+                    isDragging = false;
+                    cube.style.animationPlayState = 'running';
+                }
+            };
+
+            container.addEventListener('mousedown', startDrag);
+            window.addEventListener('mousemove', doDrag);
+            window.addEventListener('mouseup', endDrag);
+
+            container.addEventListener('touchstart', startDrag, { passive: true });
+            window.addEventListener('touchmove', doDrag, { passive: true });
+            window.addEventListener('touchend', endDrag);
+        });
+    </script>
+</body>
+</html>
